@@ -50,8 +50,8 @@ object HoconConfigGenerator {
                         } catch (e: Exception) {
                             val propertyValue = propertyValue.getList()
                             val firstProperty = propertyValue.firstOrNull()
-                            val (type,value) = when {
-                                firstProperty == null -> Any::class to getListValue(listOf()){it}
+                            val (type, value) = when {
+                                firstProperty == null -> Any::class to getListValue(listOf()) { it }
                                 firstProperty.toBooleanStrictOrNull() != null -> Boolean::class to getListValue(propertyValue) { it.toBooleanStrict() }
                                 firstProperty.toIntOrNull() != null -> Int::class to getListValue(propertyValue) { it.toInt() }
                                 firstProperty.toLongOrNull() != null -> Long::class to getListValue(propertyValue) { it.toLong() }
@@ -72,11 +72,20 @@ object HoconConfigGenerator {
         return this
     }
 
+    /**
+     * @param packageName project package name
+     * @param className The name of the class to be generated
+     * @param rootPath root path to create object
+     * @param applicationConfig load your application config
+     *
+     *
+     * rootPath="src.main.kotlin", className="Config", applicationConfig= HoconApplicationConfig(ConfigFactory.load()).config("config")
+     * */
     fun generate(
+        packageName: String,
+        rootPath: String = "src.main.kotlin",
         className: String = "Config",
-        packageName: String = "dev.kourosh",
-        applicationConfig: ApplicationConfig = HoconApplicationConfig(ConfigFactory.load()).config("config"),
-        rootPath: String = "src.main.kotlin"
+        applicationConfig: ApplicationConfig = HoconApplicationConfig(ConfigFactory.load()).config("config")
     ) {
         val config = TypeSpec.objectBuilder(className).apply {
             val allItems = applicationConfig.keys().map { it.split(".").toMutableList() }.groupBy { it.firstOrNull() ?: "undefined" }

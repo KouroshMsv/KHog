@@ -8,7 +8,7 @@ publishing {
         create<MavenPublication>("maven") {
             groupId = "com.github.KouroshMsv"
             artifactId = "objectGenerator"
-            version = "0.0.5"
+            version = "0.0.6"
 
             from(components["java"])
         }
