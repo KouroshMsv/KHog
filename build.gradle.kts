@@ -7,9 +7,19 @@ plugins {
     `maven-publish`
     kotlin("jvm") version "1.6.10"
 }
+publishing {
+    publications {
+        create<MavenPublication>("maven") {
+            groupId = "dev.kourosh"
+            artifactId = "objectGenerator"
+            version = "0.0.3"
 
+            from(components["java"])
+        }
+    }
+}
 group = "dev.kourosh"
-version = "0.0.1"
+version = "0.0.3"
 application {
     mainClass.set("dev.kourosh.ApplicationKt")
 }
