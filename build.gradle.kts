@@ -4,6 +4,7 @@ val logback_version: String by project
 
 plugins {
     application
+    `maven-publish`
     kotlin("jvm") version "1.6.10"
 }
 
