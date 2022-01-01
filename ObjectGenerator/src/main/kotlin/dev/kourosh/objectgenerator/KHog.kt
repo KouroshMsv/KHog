@@ -190,7 +190,7 @@ object KHog {
         val config = TypeSpec.objectBuilder(className).apply {
             addProperty(
                 PropertySpec.builder("rootConfig", ApplicationConfig::class, KModifier.PRIVATE)
-                    .initializer("%L", "HoconApplicationConfig(ConfigFactory.load()).config(\"$configPath\")")
+                    .initializer("%L", "io.ktor.server.config.HoconApplicationConfig(com.typesafe.config.ConfigFactory.load()).config(\"$configPath\")")
                     .build()
             )
             val allItems = applicationConfig.keys().map { it.split(".").toMutableList() }.groupBy { it.firstOrNull() ?: "undefined" }
