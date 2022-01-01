@@ -10,16 +10,17 @@ plugins {
 publishing {
     publications {
         create<MavenPublication>("maven") {
-            groupId = "dev.kourosh"
+            groupId = "com.github.KouroshMsv"
             artifactId = "objectGenerator"
-            version = "0.0.3"
+            version = "0.0.4"
 
             from(components["java"])
         }
     }
 }
-group = "dev.kourosh"
-version = "0.0.3"
+group = "com.github.KouroshMsv"
+version = "0.0.4"
+
 application {
     mainClass.set("dev.kourosh.ApplicationKt")
 }

@@ -1,8 +1,7 @@
 plugins {
     kotlin("jvm")
 }
-
-group = "dev.kourosh"
+group = "com.github.KouroshMsv"
 version = "0.0.1"
 
 repositories {
