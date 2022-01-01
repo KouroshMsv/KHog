@@ -6,7 +6,7 @@ import com.typesafe.config.ConfigFactory
 import io.ktor.server.config.*
 import java.io.File
 
-object HoconConfigGenerator {
+object KHog {
     private fun TypeSpec.Builder.generateConfig(latestKey: String, allItems: Map<String, List<MutableList<String>>>, rootConfig: ApplicationConfig): TypeSpec.Builder {
         val currentClass = this
         allItems.forEach { (key, values) ->

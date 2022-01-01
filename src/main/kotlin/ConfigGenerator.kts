@@ -1,3 +1,10 @@
-import dev.kourosh.objectgenerator.HoconConfigGenerator
+import com.typesafe.config.ConfigFactory
+import dev.kourosh.objectgenerator.KHog
+import io.ktor.server.config.*
 
-HoconConfigGenerator.generate(rootPath = "")
+KHog.generate(
+    packageName = "dev.kourosh",
+    rootPath = "src.main.kotlin",
+    className = "Config",
+    applicationConfig = HoconApplicationConfig(ConfigFactory.load()).config("config")
+)
