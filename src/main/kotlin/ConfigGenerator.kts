@@ -2,9 +2,9 @@ import com.typesafe.config.ConfigFactory
 import dev.kourosh.objectgenerator.KHog
 import io.ktor.server.config.*
 
-KHog.generate(
+KHog.generateGetProperty(
     packageName = "dev.kourosh",
     rootPath = "src.main.kotlin",
     className = "Config",
-    applicationConfig = HoconApplicationConfig(ConfigFactory.load()).config("config")
+    configPath ="config"
 )
