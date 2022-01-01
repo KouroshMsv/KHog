@@ -1,9 +1,19 @@
 plugins {
     kotlin("jvm")
+    `maven-publish`
 }
 group = "com.github.KouroshMsv"
-version = "0.0.1"
+publishing {
+    publications {
+        create<MavenPublication>("maven") {
+            groupId = "com.github.KouroshMsv"
+            artifactId = "objectGenerator"
+            version = "0.0.5"
 
+            from(components["java"])
+        }
+    }
+}
 repositories {
     mavenCentral()
 }

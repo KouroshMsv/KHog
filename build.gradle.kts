@@ -4,22 +4,10 @@ val logback_version: String by project
 
 plugins {
     application
-    `maven-publish`
     kotlin("jvm") version "1.6.10"
 }
-publishing {
-    publications {
-        create<MavenPublication>("maven") {
-            groupId = "com.github.KouroshMsv"
-            artifactId = "objectGenerator"
-            version = "0.0.4"
 
-            from(components["java"])
-        }
-    }
-}
 group = "com.github.KouroshMsv"
-version = "0.0.4"
 
 application {
     mainClass.set("dev.kourosh.ApplicationKt")
