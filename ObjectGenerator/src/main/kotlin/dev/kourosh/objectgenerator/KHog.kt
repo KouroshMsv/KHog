@@ -108,8 +108,11 @@ object KHog {
                                 else -> String::class to ""
                             }
                             currentClass.addProperty(
+
                                 PropertySpec.builder(key, type)
-                                    .initializer("%L", "rootConfig.property(\"$propertyKey\").getString()$value")
+                                    .getter(FunSpec.getterBuilder()
+                                        .addStatement("return rootConfig.property(%S).getString()$value",propertyKey)
+                                        .build())
                                     .build()
                             )
                         } catch (e: Exception) {
@@ -188,8 +191,13 @@ object KHog {
         val applicationConfig: ApplicationConfig = HoconApplicationConfig(ConfigFactory.load()).config(configPath)
 
         val config = TypeSpec.objectBuilder(className).apply {
+            addFunction(FunSpec.builder("register").apply {
+                addParameter("config",ApplicationConfig::class)
+                addStatement("rootConfig= config")
+            }.build())
             addProperty(
                 PropertySpec.builder("rootConfig", ApplicationConfig::class, KModifier.PRIVATE)
+                    .mutable()
                     .initializer("%L", "io.ktor.server.config.HoconApplicationConfig(com.typesafe.config.ConfigFactory.load()).config(\"$configPath\")")
                     .build()
             )
