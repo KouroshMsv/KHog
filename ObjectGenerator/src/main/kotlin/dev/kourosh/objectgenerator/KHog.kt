@@ -7,7 +7,11 @@ import io.ktor.server.config.*
 import java.io.File
 
 object KHog {
-    private fun TypeSpec.Builder.generateValueConfig(latestKey: String, allItems: Map<String, List<MutableList<String>>>, rootConfig: ApplicationConfig): TypeSpec.Builder {
+    private fun TypeSpec.Builder.generateValueConfig(
+            latestKey: String,
+            allItems: Map<String, List<MutableList<String>>>,
+            rootConfig: ApplicationConfig
+    ): TypeSpec.Builder {
         val currentClass = this
         allItems.forEach { (key, values) ->
             if (values.size > 1) {
@@ -43,9 +47,9 @@ object KHog {
                                 else -> String::class to propertyValue
                             }
                             currentClass.addProperty(
-                                PropertySpec.builder(key, type)
-                                    .initializer(if (type == String::class) "%S" else "%L", value)
-                                    .build()
+                                    PropertySpec.builder(key, type)
+                                        .initializer(if (type == String::class) "%S" else "%L", value)
+                                        .build()
                             )
                         } catch (e: Exception) {
                             val propertyValue = propertyValue.getList()
@@ -72,7 +76,11 @@ object KHog {
         return this
     }
 
-    private fun TypeSpec.Builder.generateConfigCode(latestKey: String, allItems: Map<String, List<MutableList<String>>>, rootConfig: ApplicationConfig): TypeSpec.Builder {
+    private fun TypeSpec.Builder.generateConfigCode(
+            latestKey: String,
+            allItems: Map<String, List<MutableList<String>>>,
+            rootConfig: ApplicationConfig
+    ): TypeSpec.Builder {
         val currentClass = this
         allItems.forEach { (key, values) ->
             if (values.size > 1) {
@@ -109,11 +117,13 @@ object KHog {
                             }
                             currentClass.addProperty(
 
-                                PropertySpec.builder(key, type)
-                                    .getter(FunSpec.getterBuilder()
-                                        .addStatement("return rootConfig.property(%S).getString()$value",propertyKey)
-                                        .build())
-                                    .build()
+                                    PropertySpec.builder(key, type)
+                                        .getter(
+                                                FunSpec.getterBuilder()
+                                                    .addStatement("return rootConfig.property(%S).getString()$value", propertyKey)
+                                                    .build()
+                                        )
+                                        .build()
                             )
                         } catch (e: Exception) {
                             val propertyValue = propertyValue.getList()
@@ -127,8 +137,15 @@ object KHog {
                                 else -> String::class to ""
                             }
 
-                            val variable="rootConfig.property(\"$propertyKey\").getList()${if(value.isBlank()) "" else ".map { it$value }"}"
-                            currentClass.addProperty(PropertySpec.builder(key, getListType(type.asClassName())).initializer("%L", variable).build())
+                            currentClass.addProperty(
+                                    PropertySpec.builder(key, getListType(type.asClassName()))
+                                        .getter(
+                                                FunSpec.getterBuilder()
+                                                    .addStatement("return rootConfig.property(%S).getList()${if (value.isBlank()) "" else ".map { it$value }"}", propertyKey)
+                                                    .build()
+                                        )
+                                        .build()
+                            )
                         }
 
                     }
@@ -150,10 +167,10 @@ object KHog {
      * rootPath="src.main.kotlin", className="Config", applicationConfig= HoconApplicationConfig(ConfigFactory.load()).config("config")
      * */
     fun generateValue(
-        packageName: String,
-        rootPath: String = "src.main.kotlin",
-        className: String = "Config",
-        configPath: String = "config"
+            packageName: String,
+            rootPath: String = "src.main.kotlin",
+            className: String = "Config",
+            configPath: String = "config"
     ) {
         val applicationConfig: ApplicationConfig = HoconApplicationConfig(ConfigFactory.load()).config(configPath)
 
@@ -183,23 +200,23 @@ object KHog {
      * rootPath="src.main.kotlin", className="Config", applicationConfig= HoconApplicationConfig(ConfigFactory.load()).config("config")
      * */
     fun generateGetProperty(
-        packageName: String,
-        rootPath: String = "src.main.kotlin",
-        className: String = "Config",
-        configPath: String = "config"
+            packageName: String,
+            rootPath: String = "src.main.kotlin",
+            className: String = "Config",
+            configPath: String = "config"
     ) {
         val applicationConfig: ApplicationConfig = HoconApplicationConfig(ConfigFactory.load()).config(configPath)
 
         val config = TypeSpec.objectBuilder(className).apply {
             addFunction(FunSpec.builder("register").apply {
-                addParameter("config",ApplicationConfig::class)
+                addParameter("config", ApplicationConfig::class)
                 addStatement("rootConfig= config")
             }.build())
             addProperty(
-                PropertySpec.builder("rootConfig", ApplicationConfig::class, KModifier.PRIVATE)
-                    .mutable()
-                    .initializer("%L", "io.ktor.server.config.HoconApplicationConfig(com.typesafe.config.ConfigFactory.load()).config(\"$configPath\")")
-                    .build()
+                    PropertySpec.builder("rootConfig", ApplicationConfig::class, KModifier.PRIVATE)
+                        .mutable()
+                        .initializer("%L", "io.ktor.server.config.HoconApplicationConfig(com.typesafe.config.ConfigFactory.load()).config(\"$configPath\")")
+                        .build()
             )
             val allItems = applicationConfig.keys().map { it.split(".").toMutableList() }.groupBy { it.firstOrNull() ?: "undefined" }
             generateConfigCode("", allItems, applicationConfig)
@@ -215,7 +232,10 @@ object KHog {
         }
     }
 
-    private fun <T> getListValue(items: List<String>, map: (String) -> T) = buildCodeBlock {
+    private fun <T> getListValue(
+            items: List<String>,
+            map: (String) -> T
+    ) = buildCodeBlock {
         val lregex = items.map(map).toString().replace("[", " ").replace("]", " ")
         add("listOf($lregex)")
     }
